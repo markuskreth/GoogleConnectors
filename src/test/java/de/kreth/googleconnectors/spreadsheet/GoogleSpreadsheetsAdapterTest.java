@@ -1,14 +1,11 @@
-package de.kreth.clubhelperbackend.google.spreadsheet;
+package de.kreth.googleconnectors.spreadsheet;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import de.kreth.googleconnectors.spreadsheet.GoogleSpreadsheetsAdapter;
-
 public class GoogleSpreadsheetsAdapterTest {
 
-	
 	@Test
 	public void testSingleChars() {
 		assertEquals("A", GoogleSpreadsheetsAdapter.intToColumn(1));

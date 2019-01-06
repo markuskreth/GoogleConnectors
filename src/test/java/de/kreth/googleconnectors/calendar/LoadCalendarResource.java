@@ -1,4 +1,4 @@
-package de.kreth.clubhelperbackend.google.calendar;
+package de.kreth.googleconnectors.calendar;
 
 import static org.junit.Assert.assertFalse;
 

@@ -1,4 +1,4 @@
-package de.kreth.clubhelperbackend.google.calendar;
+package de.kreth.googleconnectors.calendar;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -26,7 +26,7 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
 
-import de.kreth.clubhelperbackend.google.AbstractGoogleTests;
+import de.kreth.googleconnectors.AbstractGoogleTests;
 import de.kreth.googleconnectors.calendar.CalendarAdapter;
 
 @Ignore

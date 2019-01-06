@@ -1,4 +1,4 @@
-package de.kreth.clubhelperbackend.google.spreadsheet;
+package de.kreth.googleconnectors.spreadsheet;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;

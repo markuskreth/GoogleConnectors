@@ -1,4 +1,4 @@
-package de.kreth.clubhelperbackend.google.spreadsheet;
+package de.kreth.googleconnectors.spreadsheet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -17,7 +17,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import de.kreth.clubhelperbackend.google.AbstractGoogleTests;
+import de.kreth.googleconnectors.AbstractGoogleTests;
 import de.kreth.googleconnectors.spreadsheet.CellRange;
 import de.kreth.googleconnectors.spreadsheet.CellValue;
 import de.kreth.googleconnectors.spreadsheet.JumpHeightSheet;

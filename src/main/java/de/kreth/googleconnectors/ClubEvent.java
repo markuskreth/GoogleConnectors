@@ -1,8 +1,11 @@
 package de.kreth.googleconnectors;
 
 import java.sql.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
 
 public class ClubEvent {
 
@@ -156,10 +159,50 @@ public class ClubEvent {
 		event.iCalUID = ev.getICalUID();
 		event.organizerDisplayName = ev.getOrganizer().getDisplayName();
 		event.caption = ev.getSummary();
+		if (event.caption != null) {
+			event.caption = event.caption.trim();
+		}
 		event.description = ev.getDescription();
-		event.start = new Date(ev.getStart().getDateTime().getValue());
-		event.end = new Date(ev.getEnd().getDateTime().getValue());
-//		event.allDay = ev.
+		if (event.description != null) {
+			event.description = event.description.trim();
+		}
+		event.start = parse(ev.getStart());
+		event.end = parse(ev.getEnd());
+		event.allDay = startIsDateOnly(ev);
 		return event;
 	}
+
+	public static Date parse(EventDateTime date) {
+		if (date != null) {
+			if (date.getDateTime() != null) {
+				return new Date(date.getDateTime().getValue());
+			} else if (date.getDate() != null) {
+				return new Date(date.getDate().getValue());
+			}
+		}
+		return null;
+	}
+
+	public static Date adjustExcludedEndDate(Event e) {
+		if (e.isEndTimeUnspecified() == false) {
+			EventDateTime end = e.getEnd();
+			GregorianCalendar calendar = new GregorianCalendar();
+			calendar.setTimeInMillis(end.getDate() != null ? end.getDate().getValue() : end.getDateTime().getValue());
+			if (startIsDateOnly(e)) {
+				calendar.add(Calendar.DAY_OF_MONTH, -1);
+			}
+			return new Date(calendar.getTime().getTime());
+		}
+		return null;
+	}
+
+	public static boolean startIsDateOnly(Event e) {
+
+		EventDateTime start = e.getStart();
+		if (start == null) {
+			start = e.getOriginalStartTime();
+		}
+		return (start.getDate() != null || (start.getDateTime() != null && start.getDateTime().isDateOnly()));
+	}
+
 }

@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class CalendarTaskRefresher {
 	public void synchronizeCalendarTasks() throws SQLException {
 
 		try (Connection conn = dataSource.getConnection()) {
-			Statement stm = conn.createStatement();
+
 			final PreparedStatement insert = conn.prepareStatement(INSERT_SQL);
 			final PreparedStatement update = conn.prepareStatement(UPDATE_SQL);
 			final PreparedStatement select = conn.prepareStatement(SELECT_SQL);

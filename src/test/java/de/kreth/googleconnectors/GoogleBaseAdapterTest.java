@@ -1,4 +1,4 @@
-package de.kreth.clubhelperbackend.google;
+package de.kreth.googleconnectors;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
@@ -20,8 +20,6 @@ import org.mockito.MockitoAnnotations;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-
-import de.kreth.googleconnectors.GoogleBaseAdapter;
 
 @Ignore
 public class GoogleBaseAdapterTest {
