@@ -25,6 +25,7 @@ public class Main {
 		Options opts = new Options();
 		opts.addOption(Option.builder("f").argName("filePath")
 				.desc("Path to Settingsfile with database connection settings.").hasArg().required(false).build());
+		opts.addOption(Option.builder("host").argName("hostname").desc("host name ").hasArg().required(true).build());
 		DefaultParser parser = new DefaultParser();
 		CommandLine parsed = parser.parse(opts, args);
 		Properties dbProps = new Properties();
@@ -34,7 +35,7 @@ public class Main {
 
 		CalendarAdapter calendarAdapter = new CalendarAdapter();
 		CalendarTaskRefresher refresher = new CalendarTaskRefresher(calendarAdapter, ds);
-		refresher.synchronizeCalendarTasks();
+		refresher.synchronizeCalendarTasks(parsed.getOptionValue("host"));
 	}
 
 	public static DataSource createDataSource(Properties dbProps) throws SQLException {

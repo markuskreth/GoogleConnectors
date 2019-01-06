@@ -30,7 +30,7 @@ public class CalendarTaskRefresher {
 		this.dataSource = dataSource;
 	}
 
-	public void synchronizeCalendarTasks() throws SQLException {
+	public void synchronizeCalendarTasks(String hostname) throws SQLException {
 
 		try (Connection conn = dataSource.getConnection()) {
 
@@ -38,7 +38,7 @@ public class CalendarTaskRefresher {
 					final PreparedStatement update = conn.prepareStatement(UPDATE_SQL);
 					final PreparedStatement select = conn.prepareStatement(SELECT_SQL);) {
 
-				List<ClubEvent> list = loadEventsFromGoogle();
+				List<ClubEvent> list = loadEventsFromGoogle(hostname);
 
 				for (ClubEvent e : list) {
 					select.setString(1, e.getId());
@@ -89,15 +89,13 @@ public class CalendarTaskRefresher {
 		update.execute();
 	}
 
-	public List<ClubEvent> loadEventsFromGoogle() {
+	public List<ClubEvent> loadEventsFromGoogle(String remoteHost) {
 
 		log.debug("Loading events from Google Calendar");
 
 		List<ClubEvent> list = new ArrayList<>();
 
 		try {
-
-			String remoteHost = "localhost";
 
 			List<com.google.api.services.calendar.model.Event> events = calendarAdapter.getAllEvents(remoteHost);
 
