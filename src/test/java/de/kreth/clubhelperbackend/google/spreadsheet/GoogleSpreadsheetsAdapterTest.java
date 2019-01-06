@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import de.kreth.googleconnectors.spreadsheet.GoogleSpreadsheetsAdapter;
+
 public class GoogleSpreadsheetsAdapterTest {
 
 	

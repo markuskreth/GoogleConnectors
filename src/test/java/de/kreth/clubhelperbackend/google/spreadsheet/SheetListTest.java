@@ -8,6 +8,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import de.kreth.googleconnectors.spreadsheet.JumpHeightSheet;
+import de.kreth.googleconnectors.spreadsheet.SheetList;
+
 public class SheetListTest {
 
 	@Mock

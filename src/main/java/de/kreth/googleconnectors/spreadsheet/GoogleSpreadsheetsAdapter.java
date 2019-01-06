@@ -1,4 +1,4 @@
-package de.kreth.clubhelperbackend.google.spreadsheet;
+package de.kreth.googleconnectors.spreadsheet;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -28,7 +28,7 @@ import com.google.api.services.sheets.v4.model.UpdateSheetPropertiesRequest;
 import com.google.api.services.sheets.v4.model.UpdateValuesResponse;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
-import de.kreth.clubhelperbackend.google.GoogleBaseAdapter;
+import de.kreth.googleconnectors.GoogleBaseAdapter;
 
 class GoogleSpreadsheetsAdapter extends GoogleBaseAdapter {
 

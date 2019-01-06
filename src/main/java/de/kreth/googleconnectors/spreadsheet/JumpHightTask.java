@@ -1,4 +1,4 @@
-package de.kreth.clubhelperbackend.google.spreadsheet;
+package de.kreth.googleconnectors.spreadsheet;
 
 public class JumpHightTask {
 	private String name;

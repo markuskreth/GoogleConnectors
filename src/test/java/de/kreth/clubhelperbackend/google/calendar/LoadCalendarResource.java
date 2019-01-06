@@ -7,7 +7,8 @@ import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.kreth.clubhelperbackend.google.calendar.CalendarResource.CalendarKonfig;
+import de.kreth.googleconnectors.calendar.CalendarResource;
+import de.kreth.googleconnectors.calendar.CalendarResource.CalendarKonfig;
 
 public class LoadCalendarResource {
 

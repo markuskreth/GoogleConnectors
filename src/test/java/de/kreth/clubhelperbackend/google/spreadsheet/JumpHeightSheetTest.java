@@ -18,6 +18,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import de.kreth.clubhelperbackend.google.AbstractGoogleTests;
+import de.kreth.googleconnectors.spreadsheet.CellRange;
+import de.kreth.googleconnectors.spreadsheet.CellValue;
+import de.kreth.googleconnectors.spreadsheet.JumpHeightSheet;
+import de.kreth.googleconnectors.spreadsheet.SheetService;
+import de.kreth.googleconnectors.spreadsheet.Sheets;
 
 @Ignore
 public class JumpHeightSheetTest extends AbstractGoogleTests {

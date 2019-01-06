@@ -27,6 +27,7 @@ import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
 
 import de.kreth.clubhelperbackend.google.AbstractGoogleTests;
+import de.kreth.googleconnectors.calendar.CalendarAdapter;
 
 @Ignore
 public class CalendarAdapterTest extends AbstractGoogleTests {

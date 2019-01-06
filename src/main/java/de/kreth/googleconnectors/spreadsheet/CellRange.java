@@ -1,4 +1,4 @@
-package de.kreth.clubhelperbackend.google.spreadsheet;
+package de.kreth.googleconnectors.spreadsheet;
 
 import java.util.ArrayList;
 import java.util.Collections;

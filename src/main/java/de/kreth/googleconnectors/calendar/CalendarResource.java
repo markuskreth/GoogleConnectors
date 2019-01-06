@@ -1,4 +1,4 @@
-package de.kreth.clubhelperbackend.google.calendar;
+package de.kreth.googleconnectors.calendar;
 
 import java.io.IOException;
 import java.io.InputStream;

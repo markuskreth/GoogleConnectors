@@ -1,4 +1,4 @@
-package de.kreth.clubhelperbackend.google;
+package de.kreth.googleconnectors;
 
 import java.io.File;
 import java.io.FileInputStream;

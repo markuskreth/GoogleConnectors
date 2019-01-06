@@ -1,4 +1,4 @@
-package de.kreth.clubhelperbackend.google.calendar;
+package de.kreth.googleconnectors.calendar;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -18,8 +18,8 @@ import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
 
-import de.kreth.clubhelperbackend.google.GoogleBaseAdapter;
-import de.kreth.clubhelperbackend.google.calendar.CalendarResource.CalendarKonfig;
+import de.kreth.googleconnectors.GoogleBaseAdapter;
+import de.kreth.googleconnectors.calendar.CalendarResource.CalendarKonfig;
 
 public class CalendarAdapter extends GoogleBaseAdapter {
 
