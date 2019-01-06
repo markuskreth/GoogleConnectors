@@ -34,29 +34,31 @@ public class CalendarTaskRefresher {
 
 		try (Connection conn = dataSource.getConnection()) {
 
-			final PreparedStatement insert = conn.prepareStatement(INSERT_SQL);
-			final PreparedStatement update = conn.prepareStatement(UPDATE_SQL);
-			final PreparedStatement select = conn.prepareStatement(SELECT_SQL);
+			try (final PreparedStatement insert = conn.prepareStatement(INSERT_SQL);
+					final PreparedStatement update = conn.prepareStatement(UPDATE_SQL);
+					final PreparedStatement select = conn.prepareStatement(SELECT_SQL);) {
 
-			List<ClubEvent> list = loadEventsFromGoogle();
+				List<ClubEvent> list = loadEventsFromGoogle();
 
-			for (ClubEvent e : list) {
-				select.setString(1, e.getId());
-				try (ResultSet rs = select.executeQuery()) {
-					if (rs.next()) {
-						update(update, e);
-					} else {
-						try {
-							insert(insert, e);
-						} catch (SQLException ex) {
-							log.warn("Insert failed, updating {}", e, ex);
+				for (ClubEvent e : list) {
+					select.setString(1, e.getId());
+					try (ResultSet rs = select.executeQuery()) {
+						if (rs.next()) {
 							update(update, e);
+						} else {
+							try {
+								insert(insert, e);
+							} catch (SQLException ex) {
+								log.warn("Insert failed, updating {}", e, ex);
+								update(update, e);
+							}
 						}
+						log.debug("successfully stored {}", e);
 					}
-					log.debug("successfully stored {}", e);
 				}
 			}
 		}
+
 	}
 
 	public void insert(final PreparedStatement insert, ClubEvent e) throws SQLException {
