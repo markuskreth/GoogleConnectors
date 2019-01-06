@@ -67,6 +67,8 @@ class GoogleSpreadsheetsAdapter extends GoogleBaseAdapter {
 			if (log.isWarnEnabled()) {
 				log.warn("Lock interrupted", e);
 			}
+			// Restore interrupted state...
+			Thread.currentThread().interrupt();
 		}
 		if (service == null) {
 			throw new IllegalStateException("Spread Sheet Service not initialized!");

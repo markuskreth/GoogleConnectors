@@ -47,7 +47,7 @@ public abstract class GoogleBaseAdapter {
 	 */
 	static final List<String> SCOPES = Arrays.asList(SheetsScopes.SPREADSHEETS, CalendarScopes.CALENDAR);
 
-	private static volatile Credential credential;
+	private static Credential credential;
 
 	protected static final Logger log = LoggerFactory.getLogger(GoogleBaseAdapter.class);
 	/** Global instance of the {@link FileDataStoreFactory}. */

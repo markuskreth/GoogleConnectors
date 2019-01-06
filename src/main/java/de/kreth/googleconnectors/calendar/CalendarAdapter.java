@@ -50,6 +50,8 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 			if (log.isWarnEnabled()) {
 				log.warn("Lock interrupted", e);
 			}
+			// Restore interrupted state...
+			Thread.currentThread().interrupt();
 		}
 		if (service == null) {
 			throw new IllegalStateException("Calendar Service not instanciated!");
@@ -72,7 +74,7 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 		return cal;
 	}
 
-	public List<Event> getAllEvents(String serverName) throws IOException, InterruptedException {
+	public List<Event> getAllEvents(String serverName) throws IOException {
 
 		final List<Event> events = new ArrayList<>();
 
@@ -90,6 +92,8 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 			exec.awaitTermination(20, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			log.error("Thread terminated - event list may be incomplete.", e);
+			// Restore interrupted state...
+			Thread.currentThread().interrupt();
 		}
 		return events;
 	}

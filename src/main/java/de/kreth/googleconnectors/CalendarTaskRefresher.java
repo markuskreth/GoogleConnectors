@@ -110,7 +110,7 @@ public class CalendarTaskRefresher {
 				}
 			}
 
-		} catch (IOException | InterruptedException e) {
+		} catch (IOException e) {
 			log.error("Error loading events from google.", e);
 		}
 		return list;
