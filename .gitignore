@@ -2,3 +2,5 @@ target/
 \.settings/
 
 src/main/resources/client_secret\.json
+
+\.credentials/

@@ -33,7 +33,6 @@
 
 	<build>
 		<plugins>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -41,6 +40,30 @@
 				<configuration>
 					<release>${java.version}</release>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<archive>
+								<manifest>
+									<mainClass>
+										de.kreth.googleconnectors.Main
+									</mainClass>
+								</manifest>
+							</archive>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -50,6 +73,7 @@
 		<developerConnection>scm:git:https://github.com/markuskreth/GoogleConnectors.git</developerConnection>
 		<url>http://github.com/markuskreth/GoogleConnectors</url>
 	</scm>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
