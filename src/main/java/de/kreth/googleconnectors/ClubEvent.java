@@ -1,6 +1,9 @@
 package de.kreth.googleconnectors;
 
 import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -9,6 +12,7 @@ import com.google.api.services.calendar.model.EventDateTime;
 
 public class ClubEvent {
 
+	private static final DateFormat GOOGLE_DATEFORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSXXX");
 	private String id;
 	private String location;
 	private String iCalUID;
@@ -57,9 +61,8 @@ public class ClubEvent {
 
 	@Override
 	public String toString() {
-		return "ClubEvent [id=" + id + ", location=" + location + ", iCalUID=" + iCalUID + ", organizerDisplayName="
-				+ organizerDisplayName + ", caption=" + caption + ", description=" + description + ", start=" + start
-				+ ", end=" + end + ", allDay=" + allDay + "]";
+		return "ClubEvent [caption=" + caption + ", start=" + start + ", end=" + end + ", location=" + location
+				+ ", organizerDisplayName=" + organizerDisplayName + ", allDay=" + allDay + "]";
 	}
 
 	@Override
@@ -167,7 +170,7 @@ public class ClubEvent {
 			event.description = event.description.trim();
 		}
 		event.start = parse(ev.getStart());
-		event.end = parse(ev.getEnd());
+		event.end = adjustExcludedEndDate(ev);
 		event.allDay = startIsDateOnly(ev);
 		return event;
 	}
@@ -175,7 +178,11 @@ public class ClubEvent {
 	public static Date parse(EventDateTime date) {
 		if (date != null) {
 			if (date.getDateTime() != null) {
-				return new Date(date.getDateTime().getValue());
+				try {
+					return new Date(GOOGLE_DATEFORMAT.parse(date.getDateTime().toStringRfc3339()).getTime());
+				} catch (ParseException e) {
+					return new Date(date.getDateTime().getValue() + date.getDateTime().getTimeZoneShift() * 60 * 1000);
+				}
 			} else if (date.getDate() != null) {
 				return new Date(date.getDate().getValue());
 			}
