@@ -11,7 +11,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.http.HttpStatus;
+
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.Calendar.Events.Delete;
 import com.google.api.services.calendar.model.Calendar;
 import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
@@ -72,6 +76,47 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 		}
 		Calendar cal = service.calendars().get(calendarId).execute();
 		return cal;
+	}
+
+	public boolean deleteEvent(String serverName, String calendarName, String eventId) throws IOException {
+		List<CalendarListEntry> items = getCalendarList(serverName);
+
+		String calendarId = null;
+		for (CalendarListEntry e : items) {
+			if (e.getSummary().equalsIgnoreCase(calendarName)) {
+				calendarId = e.getId();
+				break;
+			}
+		}
+		if (calendarId == null) {
+			throw new IllegalArgumentException("Error: Calendar \"" + calendarName + "\" not found!");
+		}
+
+		Delete action = service.events().delete(calendarId, eventId);
+		int status;
+		try {
+			action.execute();
+			status = action.getLastStatusCode();
+		} catch (GoogleJsonResponseException ex) {
+			if (!deleteSuccess(ex.getStatusCode())) {
+				throw ex;
+			} else {
+				status = ex.getStatusCode();
+			}
+		}
+
+		if (deleteSuccess(status)) {
+			log.info("successfully deleted event eventId=" + eventId);
+		} else {
+			log.error("Error at deleting eventId=" + eventId + " with statusCode=" + status + ", StatusMessage="
+					+ action.getLastStatusMessage() + ", ResponseClass=" + action.getResponseClass()
+					+ ", ResponseHeaders=" + action.getLastResponseHeaders());
+		}
+		return deleteSuccess(status);
+	}
+
+	public boolean deleteSuccess(int status) {
+		return status == HttpStatus.SC_GONE || status == HttpStatus.SC_NO_CONTENT;
 	}
 
 	public List<Event> getAllEvents(String serverName) throws IOException {
@@ -149,6 +194,7 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 			try {
 				log.debug("Fetching events of calendar \"" + summary + "\"");
 				Calendar calendar = getCalendarBySummaryName(items, summary);
+				System.out.println("CalendarID: " + calendar.getId() + " summary: " + summary);
 				DateTime timeMin = new DateTime(oldest);
 				List<Event> items = service.events().list(calendar.getId()).setTimeMin(timeMin).execute().getItems();
 				items.forEach(item -> item.set("colorClass", colorClass));
