@@ -36,10 +36,13 @@ public abstract class GoogleBaseAdapter {
 
 	/** Application name. */
 	protected static final String APPLICATION_NAME = "ClubHelperBackend";
+
 	/** Directory to store user credentials for this application. */
 	private static final File DATA_STORE_DIR = new File(System.getProperty("catalina.base"), ".credentials");
+
 	/** Global instance of the JSON factory. */
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+
 	/**
 	 * Global instance of the scopes required by this quickstart.
 	 *
@@ -50,8 +53,10 @@ public abstract class GoogleBaseAdapter {
 	private static Credential credential;
 
 	protected static final Logger log = LoggerFactory.getLogger(GoogleBaseAdapter.class);
+
 	/** Global instance of the {@link FileDataStoreFactory}. */
 	private final FileDataStoreFactory DATA_STORE_FACTORY;
+
 	/** Global instance of the HTTP transport. */
 	private final HttpTransport HTTP_TRANSPORT;
 
@@ -161,10 +166,13 @@ public abstract class GoogleBaseAdapter {
 					log.info("Google secret not found as Resource, using user Home file.");
 				}
 				in = new FileInputStream(inHome);
-			} else {
+			}
+			else {
 				log.error("Failed to load client_secret.json. Download from google console.");
 				throw new IOException(
-						"Failed to load google secret file. Download from google console and install on Server");
+						"Failed to load google secret file.\n"
+								+ inHome.getAbsolutePath()
+								+ "\nDownload from google console and install on Server");
 			}
 		}
 		return new InputStreamReader(in, StandardCharsets.UTF_8);
