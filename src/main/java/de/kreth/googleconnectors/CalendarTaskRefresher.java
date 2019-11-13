@@ -18,11 +18,15 @@ import de.kreth.googleconnectors.calendar.CalendarAdapter;
 public class CalendarTaskRefresher {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
+
 	private static final String UPDATE_SQL = "UPDATE clubevent SET `location`=?, `iCalUID`=?, `organizerDisplayName`=?, `caption`=?, `description`=?, `start`=?, `end`=?, `allDay`=? WHERE (`id`=?)";
+
 	private static final String INSERT_SQL = "INSERT INTO `clubevent` (`id`, `location`, `iCalUID`, `organizerDisplayName`, `caption`, `description`, `start`, `end`, `allDay`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
 	private static final String SELECT_SQL = "SELECT id FROM clubevent where id=?";
 
 	private final CalendarAdapter calendarAdapter;
+
 	private final DataSource dataSource;
 
 	public CalendarTaskRefresher(CalendarAdapter calendarAdapter, DataSource dataSource) {
@@ -39,16 +43,19 @@ public class CalendarTaskRefresher {
 					final PreparedStatement select = conn.prepareStatement(SELECT_SQL);) {
 
 				List<ClubEvent> list = loadEventsFromGoogle(hostname);
+				log.debug("Found these events: {}", list);
 
 				for (ClubEvent e : list) {
 					select.setString(1, e.getId());
 					try (ResultSet rs = select.executeQuery()) {
 						if (rs.next()) {
 							update(update, e);
-						} else {
+						}
+						else {
 							try {
 								insert(insert, e);
-							} catch (SQLException ex) {
+							}
+							catch (SQLException ex) {
 								log.warn("Insert failed, updating {}", e, ex);
 								update(update, e);
 							}
@@ -91,7 +98,7 @@ public class CalendarTaskRefresher {
 
 	public List<ClubEvent> loadEventsFromGoogle(String remoteHost) {
 
-		log.debug("Loading events from Google Calendar");
+		log.info("Loading events from Google Calendar");
 
 		List<ClubEvent> list = new ArrayList<>();
 
@@ -103,12 +110,14 @@ public class CalendarTaskRefresher {
 
 				if ("cancelled".equals(ev.getStatus())) {
 					log.debug("Cancelled: {}", ev.getSummary());
-				} else {
+				}
+				else {
 					list.add(ClubEvent.parse(ev));
 				}
 			}
 
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			log.error("Error loading events from google.", e);
 		}
 		return list;

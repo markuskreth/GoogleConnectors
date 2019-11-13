@@ -115,7 +115,7 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 		return deleteSuccess(status);
 	}
 
-	public boolean deleteSuccess(int status) {
+	boolean deleteSuccess(int status) {
 		return status == HttpStatus.SC_GONE || status == HttpStatus.SC_NO_CONTENT;
 	}
 

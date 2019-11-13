@@ -23,9 +23,11 @@ public class Main {
 
 	public static void main(String[] args) throws ParseException, IOException, SQLException, GeneralSecurityException {
 		Options opts = new Options();
+
 		opts.addOption(Option.builder("f").argName("filePath")
 				.desc("Path to Settingsfile with database connection settings.").hasArg().required(false).build());
 		opts.addOption(Option.builder("host").argName("hostname").desc("host name ").hasArg().required(true).build());
+
 		DefaultParser parser = new DefaultParser();
 		CommandLine parsed = parser.parse(opts, args);
 		Properties dbProps = new Properties();
