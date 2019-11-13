@@ -112,9 +112,13 @@ public abstract class GoogleBaseAdapter {
 	 * @throws IOException
 	 */
 	private synchronized Credential authorize(String serverName) throws IOException {
+
 		log.info("Credential directory is: {}", DATA_STORE_DIR.getAbsolutePath());
+
 		if (credentialIsValid()) {
+			log.debug("credential valid, refreshing.");
 			credential.refreshToken();
+			credential.setExpiresInSeconds(Long.valueOf(691200L));
 			return credential;
 		}
 
@@ -133,8 +137,6 @@ public abstract class GoogleBaseAdapter {
 
 		log.debug("Credentials saved to {}", DATA_STORE_DIR.getAbsolutePath());
 
-		credential.setExpiresInSeconds(Long.valueOf(691200L));
-
 		return credential;
 	}
 
@@ -149,6 +151,9 @@ public abstract class GoogleBaseAdapter {
 		VerificationCodeReceiver localServerReceiver = initReceiver(serverName);
 
 		Credential credential = new AuthorizationCodeInstalledApp(flow, localServerReceiver).authorize("user");
+		if (credential.getExpiresInSeconds() == null) {
+			credential.setExpiresInSeconds(Long.valueOf(691200L));
+		}
 		return credential;
 	}
 
@@ -165,12 +170,13 @@ public abstract class GoogleBaseAdapter {
 			File inHome = getClientSecretFile();
 			if (inHome.exists()) {
 				if (log.isInfoEnabled()) {
-					log.info("Google secret not found as Resource, using user Home file.");
+					log.info("Google secret not found as Resource, using user Home file: {}", inHome.getParent());
 				}
 				in = new FileInputStream(inHome);
 			}
 			else {
-				log.error("Failed to load client_secret.json. Download from google console.");
+				log.error("Failed to load client_secret.json. Download from google console and store to {}",
+						inHome.getAbsolutePath());
 				throw new IOException(
 						"Failed to load google secret file.\n"
 								+ inHome.getAbsolutePath()
