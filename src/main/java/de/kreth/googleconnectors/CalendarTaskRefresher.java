@@ -50,17 +50,18 @@ public class CalendarTaskRefresher {
 					try (ResultSet rs = select.executeQuery()) {
 						if (rs.next()) {
 							update(update, e);
+							log.debug("successfully updated {}", e);
 						}
 						else {
 							try {
 								insert(insert, e);
+								log.debug("successfully inserted {}", e);
 							}
 							catch (SQLException ex) {
 								log.warn("Insert failed, updating {}", e, ex);
 								update(update, e);
 							}
 						}
-						log.debug("successfully stored {}", e);
 					}
 				}
 			}
