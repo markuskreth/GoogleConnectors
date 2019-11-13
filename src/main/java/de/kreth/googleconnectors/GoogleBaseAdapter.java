@@ -63,8 +63,8 @@ public abstract class GoogleBaseAdapter {
 	public GoogleBaseAdapter() throws GeneralSecurityException, IOException {
 		super();
 		HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-		DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
 		DATA_STORE_DIR.mkdirs();
+		DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
 	}
 
 	protected void checkRefreshToken(String serverName) throws IOException {
@@ -112,6 +112,7 @@ public abstract class GoogleBaseAdapter {
 	 * @throws IOException
 	 */
 	private synchronized Credential authorize(String serverName) throws IOException {
+		log.info("Credential directory is: {}", DATA_STORE_DIR.getAbsolutePath());
 		if (credentialIsValid()) {
 			credential.refreshToken();
 			return credential;
@@ -129,9 +130,8 @@ public abstract class GoogleBaseAdapter {
 		}
 
 		Credential credential = loadCredential(clientSecrets, serverName);
-		if (log.isDebugEnabled()) {
-			log.debug("Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
-		}
+
+		log.debug("Credentials saved to {}", DATA_STORE_DIR.getAbsolutePath());
 
 		credential.setExpiresInSeconds(Long.valueOf(691200L));
 
@@ -141,7 +141,9 @@ public abstract class GoogleBaseAdapter {
 	Credential loadCredential(GoogleClientSecrets clientSecrets, String serverName) throws IOException {
 		// Build flow and trigger user authorization request.
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY,
-				clientSecrets, SCOPES).setDataStoreFactory(DATA_STORE_FACTORY).setAccessType("offline")
+				clientSecrets, SCOPES)
+						.setDataStoreFactory(DATA_STORE_FACTORY)
+						.setAccessType("offline")
 						.setApprovalPrompt("force").build();
 
 		VerificationCodeReceiver localServerReceiver = initReceiver(serverName);
