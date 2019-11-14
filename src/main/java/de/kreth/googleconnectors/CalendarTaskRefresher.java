@@ -23,7 +23,9 @@ public class CalendarTaskRefresher {
 
 	private static final String INSERT_SQL = "INSERT INTO `clubevent` (`id`, `location`, `iCalUID`, `organizerDisplayName`, `caption`, `description`, `start`, `end`, `allDay`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-	private static final String SELECT_SQL = "SELECT id FROM clubevent where id=?";
+	private static final String SELECT_SQL = "SELECT id, deleted FROM clubevent where id=?";
+
+	private static final String SELECT_DELETED_SQL = "SELECT id, organizerDisplayName, caption FROM clubevent where deleted=true";
 
 	private final CalendarAdapter calendarAdapter;
 
@@ -40,10 +42,13 @@ public class CalendarTaskRefresher {
 
 			try (final PreparedStatement insert = conn.prepareStatement(INSERT_SQL);
 					final PreparedStatement update = conn.prepareStatement(UPDATE_SQL);
-					final PreparedStatement select = conn.prepareStatement(SELECT_SQL);) {
+					final PreparedStatement select = conn.prepareStatement(SELECT_SQL);
+					final PreparedStatement selectDeleted = conn.prepareStatement(SELECT_DELETED_SQL);) {
 
 				List<ClubEvent> list = loadEventsFromGoogle(hostname);
 				log.debug("Found these events: {}", list);
+
+				List<String> deleted = new ArrayList<>();
 
 				for (ClubEvent e : list) {
 					select.setString(1, e.getId());
@@ -51,6 +56,14 @@ public class CalendarTaskRefresher {
 						if (rs.next()) {
 							update(update, e);
 							log.debug("successfully updated {}", e);
+							if (rs.getBoolean("deleted")) {
+								try {
+									delete(hostname, deleted, e);
+								}
+								catch (IOException e1) {
+									log.error("Goolge delete failed for {}", e);
+								}
+							}
 						}
 						else {
 							try {
@@ -64,9 +77,35 @@ public class CalendarTaskRefresher {
 						}
 					}
 				}
+
+				try (ResultSet rs = selectDeleted.executeQuery()) {
+					while (rs.next()) {
+						String id = rs.getString("id");
+						if (!deleted.contains(id)) {
+							String organizerDisplayName = rs.getString("organizerDisplayName");
+							String caption = rs.getString("caption");
+							try {
+								calendarAdapter.deleteEvent(hostname, organizerDisplayName, id);
+								log.info("Successfully deleted {}, {}, {} online on google", organizerDisplayName,
+										caption, id);
+							}
+							catch (IOException e1) {
+								log.error("Konnte nicht löschen: {}, {}, {}", organizerDisplayName, caption, id, e1);
+							}
+						}
+					}
+				}
 			}
 		}
 
+	}
+
+	private void delete(String hostname, List<String> deleted, ClubEvent e) throws IOException {
+		String organizerDisplayName = e.getOrganizerDisplayName();
+		String id = e.getId();
+		calendarAdapter.deleteEvent(hostname, organizerDisplayName, id);
+		deleted.add(id);
+		log.info("Successfully deleted {} online on google", e);
 	}
 
 	public void insert(final PreparedStatement insert, ClubEvent e) throws SQLException {
